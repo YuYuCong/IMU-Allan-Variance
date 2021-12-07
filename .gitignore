@@ -1,0 +1,6 @@
+/build/
+/cmake-build-debug/
+/.idea/
+/data/data_*.txt
+/data/imu_*.txt
+/ros/
