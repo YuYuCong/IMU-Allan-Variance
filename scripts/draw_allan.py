@@ -78,7 +78,7 @@ def main():
     sim_acc_y_list = ReadFromSimpleFile('../data/data_imu6050_sim_acc_y.txt')
     sim_acc_z_list = ReadFromSimpleFile('../data/data_imu6050_sim_acc_z.txt')
 
-    VizAllanVariance(title="allan variance of gyro",
+    VizAllanVariance(title="allan_variance_of_gyro",
                      all_data=[("gyro_x", gyro_time_list, gyro_x_list),
                                ("gyro_y", gyro_time_list, gyro_y_list),
                                ("gyro_z", gyro_time_list, gyro_z_list),
@@ -87,7 +87,7 @@ def main():
                                ("sim_gyro_z", gyro_time_list,
                                 sim_gyro_z_list), ])
 
-    VizAllanVariance(title="allan variance of acc",
+    VizAllanVariance(title="allan_variance_of_acc",
                      all_data=[("acc_x", acc_time_list, acc_x_list),
                                ("acc_y", acc_time_list, acc_y_list),
                                ("acc_z", acc_time_list, acc_z_list),
