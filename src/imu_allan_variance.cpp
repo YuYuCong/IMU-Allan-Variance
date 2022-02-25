@@ -4,8 +4,9 @@
 #include "./gyr_lib/fitallan_gyr.h"
 #include "type.h"
 
-#include <boost/filesystem.hpp>
+// #include <boost/filesystem.hpp>
 #include <ctime>
+#include <fstream>
 #include <iomanip>  // for std::setprecision
 #include <iostream>
 #include <mutex>
@@ -71,10 +72,10 @@ static inline double StandardTimeToTimestampMillisecond(
  * @param file path to imu data file
  */
 bool ReadImuData(const std::string &file) {
-  if (!boost::filesystem::exists(file)) {
-    std::cerr << "Path not exist, please check:" << file << std::endl;
-    return false;
-  }
+  //  if (!boost::filesystem::exists(file)) {
+  //    std::cerr << "Path not exist, please check:" << file << std::endl;
+  //    return false;
+  //  }
 
   std::ifstream infile(file);
   std::string line;

@@ -23,27 +23,29 @@ function(ADD_THIRD_PARTY lib_name includes # link_libs
 endfunction()
 
 
-find_package(Ceres REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(Boost REQUIRED COMPONENTS filesystem)
-if (Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    MESSAGE(STATUS "Boost_INCLUDE_DIRS = ${Boost_INCLUDE_DIRS}.")
-    MESSAGE(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}.")
-    MESSAGE(STATUS "Boost_LIB_VERSION = ${Boost_LIB_VERSION}.")
-    MESSAGE(STATUS "Boost_LIB_DIR = ${Boost_LIB_DIR}.")
-else ()
-    MESSAGE(FATAL_ERROR "Boost not found")
-endif ()
 
-set(Boost_INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
-set(THIRDPARTY_LIBRARY "/usr/local/lib")
+find_package(Ceres REQUIRED)
 
-# Boost (filesystem, system and serialization libraries only)
-add_third_party(boost ${Boost_INCLUDE_DIRS}
-        ${THIRDPARTY_LIBRARY}/libboost_filesystem.so.1.75.0
-        ${THIRDPARTY_LIBRARY}/libboost_system.so.1.75.0
-        ${THIRDPARTY_LIBRARY}/libboost_serialization.so.1.75.0) # todo(congyu) only works on my cumputer
+#find_package(Boost REQUIRED COMPONENTS filesystem)
+#if (Boost_FOUND)
+#    include_directories(${Boost_INCLUDE_DIRS})
+#    MESSAGE(STATUS "Boost_INCLUDE_DIRS = ${Boost_INCLUDE_DIRS}.")
+#    MESSAGE(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}.")
+#    MESSAGE(STATUS "Boost_LIB_VERSION = ${Boost_LIB_VERSION}.")
+#    MESSAGE(STATUS "Boost_LIB_DIR = ${Boost_LIB_DIR}.")
+#else ()
+#    MESSAGE(FATAL_ERROR "Boost not found")
+#endif ()
+#
+#set(Boost_INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
+#set(THIRDPARTY_LIBRARY "/usr/local/lib")
+
+## Boost (filesystem, system and serialization libraries only)
+#add_third_party(boost ${Boost_INCLUDE_DIRS}
+#        ${THIRDPARTY_LIBRARY}/libboost_filesystem.so.1.75.0
+#        ${THIRDPARTY_LIBRARY}/libboost_system.so.1.75.0
+#        ${THIRDPARTY_LIBRARY}/libboost_serialization.so.1.75.0) # todo(congyu) only works on my computer
 
 include_directories(
         ${CERES_INCLUDE_DIRS}
@@ -66,4 +68,7 @@ add_executable(imu_allan_variance
         ${ACC_LIB_SOURCE_FILES}
         )
 
-target_link_libraries(imu_allan_variance ${OpenCV_LIBS} ${CERES_LIBRARIES} boost)
+target_link_libraries(imu_allan_variance
+        ${CERES_LIBRARIES}
+        # boost
+        )
