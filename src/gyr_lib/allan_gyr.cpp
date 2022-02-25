@@ -12,7 +12,7 @@ imu::AllanGyr::~AllanGyr() {
   mFactors.clear();
 }
 
-void imu::AllanGyr::PushRadPerSec(double data, double time) {// use this one
+void imu::AllanGyr::PushRadPerSec(double data, double time) {  // use this one
   // trans to degree per hour
   m_rawData.push_back(GyrData(data * 57.3 * 3600, time));
   numData++;

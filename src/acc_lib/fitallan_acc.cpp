@@ -2,8 +2,7 @@
 
 using namespace imu;
 
-FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s,
-                         std::vector<double> taus,
+FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s, std::vector<double> taus,
                          double _freq)
     : Q(0.0), N(0.0), B(0.0), K(0.0), R(0.0), freq(_freq) {
   if (sigma2s.size() != taus.size())
@@ -20,13 +19,12 @@ FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s,
   ceres::Problem problem;
 
   for (int i = 0; i < num_samples; ++i) {
+    //        std::cout << "sigma " << i << " " << taus[i] << " " << sigma2s[i]
+    //        << std::endl;
 
-    //        std::cout << "sigma " << i << " " << taus[i] << " " << sigma2s[i] <<
-    //        std::endl;
-
-    ceres::CostFunction
-        *f = new ceres::AutoDiffCostFunction<AllanSigmaError, 1, 5>(
-        new AllanSigmaError(sigma2s_tmp[i], m_taus[i]));
+    ceres::CostFunction *f =
+        new ceres::AutoDiffCostFunction<AllanSigmaError, 1, 5>(
+            new AllanSigmaError(sigma2s_tmp[i], m_taus[i]));
 
     problem.AddResidualBlock(f, NULL /* squared loss */, param);
   }
@@ -58,7 +56,8 @@ FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s,
   std::cout << " White Noise " << getWhiteNoise() << " m/s^2" << std::endl;
 }
 
-std::vector<double> FitAllanAcc::initValue(std::vector<double> sigma2s, std::vector<double> taus) {
+std::vector<double> FitAllanAcc::initValue(std::vector<double> sigma2s,
+                                           std::vector<double> taus) {
   if (sigma2s.size() != taus.size())
     std::cout << " Error with data size!!! " << sigma2s.size() << " "
               << taus.size() << std::endl;
@@ -100,10 +99,10 @@ std::vector<double> FitAllanAcc::initValue(std::vector<double> sigma2s, std::vec
   return init;
 }
 
-std::vector<double>FitAllanAcc::CalculateSimDeviation(const std::vector<double> taus) const {
+std::vector<double> FitAllanAcc::CalculateSimDeviation(
+    const std::vector<double> taus) const {
   std::vector<double> des;
-  for (auto &tau: taus)
-    des.push_back(sqrt(calcSigma2(Q, N, B, K, R, tau)));
+  for (auto &tau : taus) des.push_back(sqrt(calcSigma2(Q, N, B, K, R, tau)));
   return des;
 }
 
@@ -115,7 +114,8 @@ double FitAllanAcc::getWhiteNoise() const {
   return sqrt(freq) * sqrt(calcSigma2(Q, N, B, K, R, 1));
 }
 
-std::vector<double> FitAllanAcc::checkData(std::vector<double> sigma2s, std::vector<double> taus) {
+std::vector<double> FitAllanAcc::checkData(std::vector<double> sigma2s,
+                                           std::vector<double> taus) {
   std::vector<double> sigma2s_tmp;
   double data_tmp = 0;
   //        bool is_first   = true;
@@ -153,12 +153,8 @@ int FitAllanAcc::findMinIndex(std::vector<double> num) {
   return min_index;
 }
 
-double FitAllanAcc::calcSigma2(double _Q,
-                        double _N,
-                        double _B,
-                        double _K,
-                        double _R,
-                        double _tau) const {
+double FitAllanAcc::calcSigma2(double _Q, double _N, double _B, double _K,
+                               double _R, double _tau) const {
   // clang-format off
   return _Q * _Q / (_tau * _tau)
       + _N * _N / _tau
@@ -168,25 +164,15 @@ double FitAllanAcc::calcSigma2(double _Q,
   // clang-format on
 }
 
-double FitAllanAcc::getN() const {
-  return sqrt(N * N) / 60.0;
-}
+double FitAllanAcc::getN() const { return sqrt(N * N) / 60.0; }
 
-double FitAllanAcc::getB() const {
-  return sqrt(B * B) / 0.6642824703;
-}
+double FitAllanAcc::getB() const { return sqrt(B * B) / 0.6642824703; }
 
-double FitAllanAcc::getK() const {
-  return 60.0 * sqrt(3.0 * K * K);
-}
+double FitAllanAcc::getK() const { return 60.0 * sqrt(3.0 * K * K); }
 
-double FitAllanAcc::getR() const {
-  return 3600.0 * sqrt(2.0 * R * R);
-}
+double FitAllanAcc::getR() const { return 3600.0 * sqrt(2.0 * R * R); }
 
-double FitAllanAcc::getQ() const {
-  return sqrt(Q * Q) / (3600.0 * sqrt(3.0));
-}
+double FitAllanAcc::getQ() const { return sqrt(Q * Q) / (3600.0 * sqrt(3.0)); }
 
 // double FitAllanAcc::getN() const
 //{

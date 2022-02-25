@@ -4,7 +4,7 @@
 #include <iostream>
 
 class Data {
-public:
+ public:
   Data() : v(0.0), t(0.0) {}
   Data(double data, double time) : v(data), t(time) {}
 
@@ -13,7 +13,7 @@ public:
 };
 
 class AccData {
-public:
+ public:
   AccData() : a(0.0), t(0.0) {}
   AccData(double data, double time) : a(data), t(time) {}
 
@@ -22,7 +22,7 @@ public:
 };
 
 class GyrData {
-public:
+ public:
   GyrData() : w(0.0), t(0.0) {}
   GyrData(double data, double time) : w(data), t(time) {}
 
@@ -31,7 +31,7 @@ public:
 };
 
 struct ImuReading {
-public:
+ public:
   struct Acc {
     double x = 0, y = 0, z = 0;
     Acc() = default;
@@ -55,4 +55,4 @@ public:
   Acc acc;
 };
 
-#endif // TYPE_H
+#endif  // TYPE_H

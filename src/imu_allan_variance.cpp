@@ -5,9 +5,9 @@
 #include "type.h"
 
 #include <boost/filesystem.hpp>
-#include <iomanip> // for std::setprecision
-#include <iostream>
 #include <ctime>
+#include <iomanip>  // for std::setprecision
+#include <iostream>
 #include <mutex>
 #include <queue>
 
@@ -41,12 +41,12 @@ static inline std::vector<std::string> SplitString(const std::string &str,
  * @param str_time time in format "yyyy-mm-dd hh:MM:ss"
  * @return timestamp in second
  */
-static inline time_t StandardTimeToTimestampSecond(const std::string &time_string) {
+static inline time_t StandardTimeToTimestampSecond(
+    const std::string &time_string) {
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
-  sscanf(time_string.c_str(), "%d-%d-%d %d:%d:%d",
-         &tm.tm_year, &tm.tm_mon, &tm.tm_mday,
-         &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
+  sscanf(time_string.c_str(), "%d-%d-%d %d:%d:%d", &tm.tm_year, &tm.tm_mon,
+         &tm.tm_mday, &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
   tm.tm_year -= 1900;
   tm.tm_mon--;
   return mktime(&tm);
@@ -57,7 +57,8 @@ static inline time_t StandardTimeToTimestampSecond(const std::string &time_strin
  * @param str_time time in format "yyyy-mm-dd hh:MM:ss.mmmmmm"
  * @return timestamp in second
  */
-static inline double StandardTimeToTimestampMillisecond(const std::string &time_string) {
+static inline double StandardTimeToTimestampMillisecond(
+    const std::string &time_string) {
   double second = StandardTimeToTimestampSecond(time_string.substr(0, 19));
   double millisecond = std::stod(("0." + time_string.substr(20, 6)).c_str());
   double timestamp = second + millisecond;
@@ -101,12 +102,8 @@ bool ReadImuData(const std::string &file) {
     double timestamp = StandardTimeToTimestampMillisecond(timestamp_string);
     // std::cout << std::fixed << timestamp << std::endl;
 
-    ImuReading imu_reading(timestamp,
-                           stod(substrs[1]),
-                           stod(substrs[2]),
-                           stod(substrs[3]),
-                           stod(substrs[4]),
-                           stod(substrs[5]),
+    ImuReading imu_reading(timestamp, stod(substrs[1]), stod(substrs[2]),
+                           stod(substrs[3]), stod(substrs[4]), stod(substrs[5]),
                            stod(substrs[6]));
     gyr_x->PushRadPerSec(imu_reading.gyro.x, imu_reading.timestamp);
     gyr_y->PushRadPerSec(imu_reading.gyro.y, imu_reading.timestamp);
@@ -128,10 +125,8 @@ void WriteDataOneSingleAxis(const std::string &data_save_path,
                             const std::vector<double> &write_data) {
   std::ofstream out_t;
   std::ofstream out_x;
-  out_t.open(data_save_path + "data_" + data_name + "_t.txt",
-             std::ios::trunc);
-  out_x.open(data_save_path + "data_" + data_name + "_x.txt",
-             std::ios::trunc);
+  out_t.open(data_save_path + "data_" + data_name + "_t.txt", std::ios::trunc);
+  out_x.open(data_save_path + "data_" + data_name + "_x.txt", std::ios::trunc);
   out_t << std::setprecision(10);
   out_x << std::setprecision(10);
   for (unsigned int index = 0; index < timestamp.size(); ++index) {
@@ -156,20 +151,16 @@ void WriteDataAllThreeAxis(const std::string &data_save_path,
   std::ofstream out_x;
   std::ofstream out_y;
   std::ofstream out_z;
-  out_t.open(data_save_path + "data_" + data_name + "_t.txt",
-             std::ios::trunc);
-  out_x.open(data_save_path + "data_" + data_name + "_x.txt",
-             std::ios::trunc);
-  out_y.open(data_save_path + "data_" + data_name + "_y.txt",
-             std::ios::trunc);
-  out_z.open(data_save_path + "data_" + data_name + "_z.txt",
-             std::ios::trunc);
+  out_t.open(data_save_path + "data_" + data_name + "_t.txt", std::ios::trunc);
+  out_x.open(data_save_path + "data_" + data_name + "_x.txt", std::ios::trunc);
+  out_y.open(data_save_path + "data_" + data_name + "_y.txt", std::ios::trunc);
+  out_z.open(data_save_path + "data_" + data_name + "_z.txt", std::ios::trunc);
   out_t << std::setprecision(10);
   out_x << std::setprecision(10);
   out_y << std::setprecision(10);
   out_z << std::setprecision(10);
 
-  for (int index = 0; index < timestamp.size(); ++index) {
+  for (size_t index = 0; index < timestamp.size(); ++index) {
     out_t << timestamp[index] << '\n';
     out_x << write_data_x[index] << '\n';
     out_y << write_data_y[index] << '\n';
@@ -187,10 +178,10 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
                  const imu::FitAllanGyr &gyr_z, const imu::FitAllanAcc &acc_x,
                  const imu::FitAllanAcc &acc_y, const imu::FitAllanAcc &acc_z) {
   std::ofstream out_file;
-  out_file.open(data_path + sensor_name + "_imu_param.txt",
-                std::ios::trunc);
+  out_file.open(data_path + sensor_name + "_imu_param.txt", std::ios::trunc);
 
-  out_file << "sensor_type: " << "IMU" << '\n';
+  out_file << "sensor_type: "
+           << "IMU" << '\n';
   out_file << "name: " << sensor_name << '\n';
 
   out_file << "Gyro:";
@@ -201,12 +192,17 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
   out_file << "{" << '\n';
   out_file << std::string("gyr_n: ")
            << (gyr_x.getWhiteNoise() + gyr_y.getWhiteNoise() +
-               gyr_z.getWhiteNoise()) / 3 << '\n';;
+               gyr_z.getWhiteNoise()) /
+                  3
+           << '\n';
+
   out_file << std::string("gyr_w: ")
            << (gyr_x.getBiasInstability() + gyr_y.getBiasInstability() +
-               gyr_z.getBiasInstability()) / 3 << '\n';;
+               gyr_z.getBiasInstability()) /
+                  3
+           << '\n';
 
-  out_file << "}" << '\n';;
+  out_file << "}" << '\n';
 
   out_file << "x-axis: ";
   out_file << "{" << '\n';
@@ -215,7 +211,8 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
   out_file << "}" << '\n';
 
   out_file << "y-axis: ";
-  out_file << "{" << '\n';;
+  out_file << "{" << '\n';
+
   out_file << std::string("gyr_n: ") << gyr_y.getWhiteNoise() << '\n';
   out_file << std::string("gyr_w: ") << gyr_y.getBiasInstability() << '\n';
   out_file << "}" << '\n';
@@ -236,10 +233,14 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
   out_file << "{" << '\n';
   out_file << std::string("acc_n: ")
            << (acc_x.getWhiteNoise() + acc_y.getWhiteNoise() +
-               acc_z.getWhiteNoise()) / 3 << '\n';
+               acc_z.getWhiteNoise()) /
+                  3
+           << '\n';
   out_file << std::string("acc_w: ")
            << (acc_x.getBiasInstability() + acc_y.getBiasInstability() +
-               acc_z.getBiasInstability()) / 3 << '\n';
+               acc_z.getBiasInstability()) /
+                  3
+           << '\n';
   out_file << "}" << '\n';
 
   out_file << "x-axis: ";
@@ -269,7 +270,7 @@ int main(int argc, char **argv) {
   std::string imu_data_path = "../data/imu_reading.txt";
   std::string imu_name = "IMUxxxx";
   std::string data_save_path = "../data/";
-  int max_cluster = 100; // todo(congyu) read from config
+  int max_cluster = 100;  // todo(congyu) read from config
 
   gyr_x = new imu::AllanGyr("gyr x", max_cluster);
   gyr_y = new imu::AllanGyr("gyr y", max_cluster);
@@ -357,31 +358,15 @@ int main(int argc, char **argv) {
   std::vector<double> acc_sim_d_z = fit_acc_z.CalculateSimDeviation(acc_ts_x);
 
   /// log to viz
-  WriteDataAllThreeAxis(data_save_path,
-                        imu_name + "_sim_gyr",
-                        gyro_ts_x,
-                        gyro_sim_d_x,
-                        gyro_sim_d_y,
-                        gyro_sim_d_z);
-  WriteDataAllThreeAxis(data_save_path,
-                        imu_name + "_gyr",
-                        gyro_ts_x,
-                        gyro_d_x,
-                        gyro_d_y,
-                        gyro_d_z);
+  WriteDataAllThreeAxis(data_save_path, imu_name + "_sim_gyr", gyro_ts_x,
+                        gyro_sim_d_x, gyro_sim_d_y, gyro_sim_d_z);
+  WriteDataAllThreeAxis(data_save_path, imu_name + "_gyr", gyro_ts_x, gyro_d_x,
+                        gyro_d_y, gyro_d_z);
 
-  WriteDataAllThreeAxis(data_save_path,
-                        imu_name + "_sim_acc",
-                        acc_ts_x,
-                        acc_sim_d_x,
-                        acc_sim_d_y,
-                        acc_sim_d_z);
-  WriteDataAllThreeAxis(data_save_path,
-                        imu_name + "_acc",
-                        acc_ts_x,
-                        acc_d_x,
-                        acc_d_y,
-                        acc_d_z);
+  WriteDataAllThreeAxis(data_save_path, imu_name + "_sim_acc", acc_ts_x,
+                        acc_sim_d_x, acc_sim_d_y, acc_sim_d_z);
+  WriteDataAllThreeAxis(data_save_path, imu_name + "_acc", acc_ts_x, acc_d_x,
+                        acc_d_y, acc_d_z);
 
   /// write result
   WriteResult(data_save_path, imu_name, fit_gyr_x, fit_gyr_y, fit_gyr_z,

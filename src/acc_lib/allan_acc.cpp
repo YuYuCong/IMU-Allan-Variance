@@ -41,7 +41,7 @@ void imu::AllanAcc::CalculateAllanVariance() {
   std::cout << m_name << " "
             << " end_t " << end_t << std::endl;
   std::cout << m_name << " "
-            << "dt " << std::endl //
+            << "dt " << std::endl  //
             << "-------------" << (end_t - start_t) << " s" << std::endl
             << "-------------" << (end_t - start_t) / 60 << " min" << std::endl
             << "-------------" << (end_t - start_t) / 3600 << " h" << std::endl;
@@ -65,9 +65,7 @@ void imu::AllanAcc::CalculateAllanVariance() {
   mVariance = calcVariance(period);
 }
 
-std::vector<double> imu::AllanAcc::GetVariance() const {
-  return mVariance;
-}
+std::vector<double> imu::AllanAcc::GetVariance() const { return mVariance; }
 
 std::vector<double> imu::AllanAcc::GetDeviation() {
   double period = getAvgPeriod();
@@ -75,7 +73,7 @@ std::vector<double> imu::AllanAcc::GetDeviation() {
   std::vector<double> sigma2 = calcVariance(period);
   std::vector<double> sigma;
 
-  for (auto &sig: sigma2) {
+  for (auto &sig : sigma2) {
     sigma.push_back(sqrt(sig));
   }
   return sigma;
@@ -92,16 +90,11 @@ std::vector<double> imu::AllanAcc::GetTimestamp() {
   return time;
 }
 
-std::vector<int> imu::AllanAcc::getFactors() const {
-  return mFactors;
-}
+std::vector<int> imu::AllanAcc::getFactors() const { return mFactors; }
 
-double imu::AllanAcc::GetFrequency() const {
-  return m_freq;
-}
+double imu::AllanAcc::GetFrequency() const { return m_freq; }
 
-std::vector<double>
-imu::AllanAcc::calcVariance(double period) {
+std::vector<double> imu::AllanAcc::calcVariance(double period) {
   std::vector<double> sigma2(numFactors, 0.0);
 
   for (int i = 0; i < numFactors; i++) {
@@ -131,7 +124,7 @@ std::vector<double> imu::AllanAcc::calcThetas(const double freq) {
   std::vector<double> thetas;
 
   double sum = 0;
-  for (auto &acc: m_rawData) {
+  for (auto &acc : m_rawData) {
     sum += acc.a;
     thetas.push_back(sum / freq);
   }
@@ -139,7 +132,6 @@ std::vector<double> imu::AllanAcc::calcThetas(const double freq) {
 }
 
 void imu::AllanAcc::initStrides() {
-
   int mode = numData / 2;
   unsigned int maxStride = 1;
   int shft = 0;
@@ -166,13 +158,13 @@ void imu::AllanAcc::initStrides() {
   std::vector<int> factors(numCluster, 0);
 
   numFactors = 1;
-  factors[0] = (int) avgFactors[0];
+  factors[0] = (int)avgFactors[0];
 
   for (int i = 1; i < numCluster; i++) {
     // std::cout << m_name << " "
     //          << " avgFactors " << i << " " << avgFactors[i] << std::endl;
     if (avgFactors[i] != avgFactors[i - 1]) {
-      factors[numFactors] = (int) avgFactors[i];
+      factors[numFactors] = (int)avgFactors[i];
       numFactors++;
     }
   }
@@ -188,7 +180,7 @@ std::vector<double> imu::AllanAcc::getLogSpace(float a, float b) {
 
   double start = pow(10, a);
   double end = pow(10, b);
-  double progression = pow(end / start, (float) 1 / (numCluster - 1));
+  double progression = pow(end / start, (float)1 / (numCluster - 1));
 
   logSpace.push_back(start);
   for (int i = 1; i < numCluster; i++) {
@@ -203,9 +195,8 @@ double imu::AllanAcc::getAvgDt() {
   double sum_dt = 0.0;
   double start_t = m_rawData[0].t;
   bool first = true;
-  for (auto &acc: m_rawData) {
-    if (!first)
-      sum_dt += (acc.t - start_t);
+  for (auto &acc : m_rawData) {
+    if (!first) sum_dt += (acc.t - start_t);
     start_t = acc.t;
     first = false;
   }

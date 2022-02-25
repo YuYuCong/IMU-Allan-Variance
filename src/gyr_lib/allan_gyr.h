@@ -1,10 +1,10 @@
 #ifndef ALLAN_H
 #define ALLAN_H
 
-#include "../../include/type.h"
-#include <iostream>
 #include <math.h>
+#include <iostream>
 #include <vector>
+#include "../../include/type.h"
 
 namespace imu {
 
@@ -65,6 +65,6 @@ class AllanGyr {
 
   std::vector<double> mVariance;
 };
-}
+}  // namespace imu
 
-#endif // ALLAN_H
+#endif  // ALLAN_H
