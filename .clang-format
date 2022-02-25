@@ -1,0 +1,32 @@
+---
+BasedOnStyle: Google
+---
+Language: Cpp
+
+#AlignArrayOfStructures: Right
+AlignEscapedNewlines: Right
+#AllowShortBlocksOnASingleLine: Always
+#AlwaysBreakTemplateDeclarations: MultiLine
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+CommentPragmas: '^ IWYU pragma:'
+#EmptyLineAfterAccessModifier: Leave
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex:           '^<.*\.hp*>'
+    Priority:        1
+  - Regex:           '^<.*'
+    Priority:        2
+  - Regex:           '.*'
+    Priority:        3
+#InsertTrailingCommas: Wrapped
+#PackConstructorInitializers: BinPack
+PointerAlignment: Right
+#QualifierAlignment: Custom
+#QualifierOrder: ['inline', 'static', 'const', 'volatile', 'type']
+#ShortNamespaceLines: 0
+SpacesInContainerLiterals: false
+#SpacesInLineCommentPrefix:
+#  Minimum: 1
+#  Maximum: 1
+TabWidth: 4
+...
