@@ -54,24 +54,27 @@ static inline time_t StandardTimeToTimestampSecond(
 }
 
 /**
- * @brief convert standard time in string  to timestamp
+ * @brief convert standard time in string to timestamp
  * @param str_time time in format "yyyy-mm-dd hh:MM:ss.mmmmmm"
- * @return timestamp in second
+ * @return timestamp in milli second
  */
-static inline double StandardTimeToTimestampMillisecond(
+static inline double StandardTimeToTimestampMilliSecond(
     const std::string &time_string) {
   double second = StandardTimeToTimestampSecond(time_string.substr(0, 19));
-  double millisecond = std::stod(("0." + time_string.substr(20, 6)).c_str());
-  double timestamp = second + millisecond;
-  // timestamp *= 1000;
+  double millisecond = std::stod((time_string.substr(20, 6)).c_str());
+  double timestamp = second * 1000 + millisecond;
   return timestamp;
 }
 
 /**
  * @brief read imu data from file
  * @param file path to imu data file
+ *  file format eg:
+E0928 09:53:55.873848 13488 imu_data.cpp:162]
+imu:0,0.00492204,-0.00133028,0.00186239,0.401953,-0.162695,9.67559
+ timestamp,gx,gy,gz,ax,ay,az
  */
-bool ReadImuData(const std::string &file) {
+bool ReadImuDataGlog(const std::string &file) {
   //  if (!boost::filesystem::exists(file)) {
   //    std::cerr << "Path not exist, please check:" << file << std::endl;
   //    return false;
@@ -88,10 +91,6 @@ bool ReadImuData(const std::string &file) {
       std::cerr << "Log format incorrect," << line << std::endl;
       return false;
     }
-    /*
-    std::string timestamp_string = SplitString(substrs[0], ":").back();
-    // todo(congyu) fix timestamp in imu msg
-    */
 
     // Glog timestamp format: E0928 09:53:55.872972
     std::string yy = "2021";
@@ -100,9 +99,53 @@ bool ReadImuData(const std::string &file) {
     std::string hhmmss_mmmmmm = SplitString(line, " ")[1];
     std::string timestamp_string =
         yy + "-" + mm + "-" + dd + " " + hhmmss_mmmmmm;
-    double timestamp = StandardTimeToTimestampMillisecond(timestamp_string);
-    // std::cout << std::fixed << timestamp << std::endl;
+    double timestamp =
+        StandardTimeToTimestampMilliSecond(timestamp_string) / 1000.0;
 
+    ImuReading imu_reading(timestamp, stod(substrs[1]), stod(substrs[2]),
+                           stod(substrs[3]), stod(substrs[4]), stod(substrs[5]),
+                           stod(substrs[6]));
+    gyr_x->PushRadPerSec(imu_reading.gyro.x, imu_reading.timestamp);
+    gyr_y->PushRadPerSec(imu_reading.gyro.y, imu_reading.timestamp);
+    gyr_z->PushRadPerSec(imu_reading.gyro.z, imu_reading.timestamp);
+    acc_x->pushMPerSec2(imu_reading.acc.x, imu_reading.timestamp);
+    acc_y->pushMPerSec2(imu_reading.acc.y, imu_reading.timestamp);
+    acc_z->pushMPerSec2(imu_reading.acc.z, imu_reading.timestamp);
+  }
+  return true;
+}
+
+/**
+ * @brief read imu data from file
+ * @param file path to imu data file
+*  file format eg:
+1645962084.456809 -1.5219385 1.5444301 9.8459334 -0.0266748 -0.0209981 0.6608164
+ timestamp,gx,gy,gz,ax,ay,az
+ */
+bool ReadImuDataSimpleFormat(const std::string &file) {
+  //  if (!boost::filesystem::exists(file)) {
+  //    std::cerr << "Path not exist, please check:" << file << std::endl;
+  //    return false;
+  //  }
+
+  std::ifstream infile(file);
+  std::string line;
+  while (std::getline(infile, line)) {
+    if (line.find("#") != std::string::npos) {
+      continue;
+    }
+    auto substrs = SplitString(line, " ");
+    if (substrs.size() != 7) {
+      std::cerr << "Log format incorrect," << substrs.size() << std::endl;
+      for (const auto &i : substrs) {
+        std::cout << i << " ";
+      }
+      std::cout << std::endl;
+      return false;
+    }
+
+    const std::string timestamp_string = substrs[0];
+    double timestamp = stod(timestamp_string);
     ImuReading imu_reading(timestamp, stod(substrs[1]), stod(substrs[2]),
                            stod(substrs[3]), stod(substrs[4]), stod(substrs[5]),
                            stod(substrs[6]));
@@ -258,8 +301,8 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
 
   out_file << "z-axis: ";
   out_file << "{" << '\n';
-  out_file << std::string("acc_n") << acc_z.getWhiteNoise() << '\n';
-  out_file << std::string("acc_w") << acc_z.getBiasInstability() << '\n';
+  out_file << std::string("acc_n: ") << acc_z.getWhiteNoise() << '\n';
+  out_file << std::string("acc_w: ") << acc_z.getBiasInstability() << '\n';
   out_file << "}" << '\n';
 
   out_file << "}" << '\n';
@@ -281,7 +324,12 @@ int main(int argc, char **argv) {
   acc_z = new imu::AllanAcc("acc z", max_cluster);
 
   std::cout << "reading imu data..." << std::endl;
-  if (!ReadImuData(imu_data_path)) {
+  //  if (!ReadImuData(imu_data_path)) {
+  //    return 0;
+  //  }
+
+  imu_data_path = "../data/imu_noise_data_sim.txt";
+  if (!ReadImuDataSimpleFormat(imu_data_path)) {
     return 0;
   }
 

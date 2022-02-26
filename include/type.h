@@ -50,7 +50,7 @@ struct ImuReading {
     acc = Acc(ax, ay, az);
   }
 
-  double timestamp = 0;
+  double timestamp = 0; // second
   Gyro gyro;
   Acc acc;
 };
