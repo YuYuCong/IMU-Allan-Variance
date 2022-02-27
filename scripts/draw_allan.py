@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def ReadFromSimpleFile(file_path='./log.txt'):
+def read_from_simple_file(file_path='./log.txt'):
     """
     @brief read data from log file
         file format: one num one line, annotation with '#' in line
@@ -21,7 +21,7 @@ def ReadFromSimpleFile(file_path='./log.txt'):
     return data_list
 
 
-def VizAllanVariance(title="", all_data=[("label", [], [])]):
+def viz_allan_variance(title="", all_data=[("label", [], [])]):
     """
     @brief viz Allan Variance data
     @input title
@@ -37,7 +37,7 @@ def VizAllanVariance(title="", all_data=[("label", [], [])]):
             plt.plot(x, y, label=label)
         else:
             plt.scatter(x, y, label=label, s=8)
-        plt.loglog(basex=10, basey=10)
+        plt.loglog(x, y)
     plt.xlabel(r'$\tau[s]$')
     if ('gyr' in label):
         plt.ylabel(r'$\sigma(\tau)[deg/h]$')
@@ -55,45 +55,76 @@ def VizAllanVariance(title="", all_data=[("label", [], [])]):
 def main():
     print("Allan Variance Plot.")
 
+    imu_name = "imuSimulation"
     # read timestamp
-    gyro_time_list = ReadFromSimpleFile('../data/data_imu6050_gyr_t.txt')
+    gyro_time_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_gyr_t.txt')
     # read gyro allan data
-    gyro_x_list = ReadFromSimpleFile('../data/data_imu6050_gyr_x.txt')
-    gyro_y_list = ReadFromSimpleFile('../data/data_imu6050_gyr_y.txt')
-    gyro_z_list = ReadFromSimpleFile('../data/data_imu6050_gyr_z.txt')
+    gyro_x_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_gyr_x.txt')
+    gyro_y_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_gyr_y.txt')
+    gyro_z_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_gyr_z.txt')
     # read timestamp
-    acc_time_list = ReadFromSimpleFile('../data/data_imu6050_acc_t.txt')
+    acc_time_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_acc_t.txt')
     # read acc allan data
-    acc_x_list = ReadFromSimpleFile('../data/data_imu6050_acc_x.txt')
-    acc_y_list = ReadFromSimpleFile('../data/data_imu6050_acc_y.txt')
-    acc_z_list = ReadFromSimpleFile('../data/data_imu6050_acc_z.txt')
+    acc_x_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_acc_x.txt')
+    acc_y_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_acc_y.txt')
+    acc_z_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_acc_z.txt')
+    print(acc_x_list)
+    print(acc_y_list)
+    print(acc_z_list)
 
     # read sim gyro allan data
-    sim_gyro_x_list = ReadFromSimpleFile('../data/data_imu6050_sim_gyr_x.txt')
-    sim_gyro_y_list = ReadFromSimpleFile('../data/data_imu6050_sim_gyr_y.txt')
-    sim_gyro_z_list = ReadFromSimpleFile('../data/data_imu6050_sim_gyr_z.txt')
+    sim_gyro_x_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_sim_gyr_x.txt')
+    sim_gyro_y_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_sim_gyr_y.txt')
+    sim_gyro_z_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_sim_gyr_z.txt')
+    print(sim_gyro_x_list)
+    print(sim_gyro_y_list)
+    print(sim_gyro_z_list)
 
     # read sim acc allan data
-    sim_acc_x_list = ReadFromSimpleFile('../data/data_imu6050_sim_acc_x.txt')
-    sim_acc_y_list = ReadFromSimpleFile('../data/data_imu6050_sim_acc_y.txt')
-    sim_acc_z_list = ReadFromSimpleFile('../data/data_imu6050_sim_acc_z.txt')
+    sim_acc_x_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_sim_acc_x.txt')
+    sim_acc_y_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_sim_acc_y.txt')
+    sim_acc_z_list = read_from_simple_file(
+        '../data/data_' + imu_name + '_sim_acc_z.txt')
 
-    VizAllanVariance(title="allan_variance_of_gyro",
-                     all_data=[("gyro_x", gyro_time_list, gyro_x_list),
-                               ("gyro_y", gyro_time_list, gyro_y_list),
-                               ("gyro_z", gyro_time_list, gyro_z_list),
-                               ("sim_gyro_x", gyro_time_list, sim_gyro_x_list),
-                               ("sim_gyro_y", gyro_time_list, sim_gyro_y_list),
-                               ("sim_gyro_z", gyro_time_list,
-                                sim_gyro_z_list), ])
+    print(sim_acc_x_list)
+    print(sim_acc_y_list)
+    print(sim_acc_z_list)
 
-    VizAllanVariance(title="allan_variance_of_acc",
-                     all_data=[("acc_x", acc_time_list, acc_x_list),
-                               ("acc_y", acc_time_list, acc_y_list),
-                               ("acc_z", acc_time_list, acc_z_list),
-                               ("sim_acc_x", acc_time_list, sim_acc_x_list),
-                               ("sim_acc_y", acc_time_list, sim_acc_y_list),
-                               ("sim_acc_z", acc_time_list, sim_acc_z_list), ])
+    viz_allan_variance(title="allan_variance_of_gyro",
+                       all_data=[("gyro_x", gyro_time_list, gyro_x_list),
+                                 ("gyro_y", gyro_time_list, gyro_y_list),
+                                 ("gyro_z", gyro_time_list, gyro_z_list),
+                                 (
+                                     "sim_gyro_x", gyro_time_list,
+                                     sim_gyro_x_list),
+                                 (
+                                     "sim_gyro_y", gyro_time_list,
+                                     sim_gyro_y_list),
+                                 ("sim_gyro_z", gyro_time_list,
+                                  sim_gyro_z_list), ])
+
+    viz_allan_variance(title="allan_variance_of_acc",
+                       all_data=[("acc_x", acc_time_list, acc_x_list),
+                                 ("acc_y", acc_time_list, acc_y_list),
+                                 ("acc_z", acc_time_list, acc_z_list),
+                                 ("sim_acc_x", acc_time_list, sim_acc_x_list),
+                                 ("sim_acc_y", acc_time_list, sim_acc_y_list),
+                                 (
+                                     "sim_acc_z", acc_time_list,
+                                     sim_acc_z_list), ])
 
 
 if __name__ == "__main__":
