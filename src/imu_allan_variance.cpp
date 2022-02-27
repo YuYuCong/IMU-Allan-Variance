@@ -222,90 +222,66 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
                  const imu::FitAllanGyr &gyr_z, const imu::FitAllanAcc &acc_x,
                  const imu::FitAllanAcc &acc_y, const imu::FitAllanAcc &acc_z) {
   std::ofstream out_file;
-  out_file.open(data_path + sensor_name + "_imu_param.txt", std::ios::trunc);
+  out_file.open(data_path + "imu_param_" + sensor_name + ".txt",
+                std::ios::trunc);
 
   out_file << "sensor_type: "
            << "IMU" << '\n';
   out_file << "name: " << sensor_name << '\n';
 
-  out_file << "Gyro:";
-  out_file << "{" << '\n';
-  out_file << "unit: rad/s" << '\n';
+  out_file << "Gyro:\n";
+  out_file << "\tunit: rad/s\n";
 
-  out_file << "avg-axis:";
-  out_file << "{" << '\n';
-  out_file << std::string("gyr_n: ")
+  out_file << "\tavg-axis:\n";
+  out_file << "\t\tgyr_n: "
            << (gyr_x.getWhiteNoise() + gyr_y.getWhiteNoise() +
                gyr_z.getWhiteNoise()) /
                   3
            << '\n';
-
-  out_file << std::string("gyr_w: ")
+  out_file << "\t\tgyr_w: "
            << (gyr_x.getBiasInstability() + gyr_y.getBiasInstability() +
                gyr_z.getBiasInstability()) /
                   3
            << '\n';
 
-  out_file << "}" << '\n';
+  out_file << "\tx-axis:\n";
+  out_file << "\t\tgyr_n: " << gyr_x.getWhiteNoise() << '\n';
+  out_file << "\t\tgyr_w: " << gyr_x.getBiasInstability() << '\n';
 
-  out_file << "x-axis: ";
-  out_file << "{" << '\n';
-  out_file << std::string("gyr_n: ") << gyr_x.getWhiteNoise() << '\n';
-  out_file << std::string("gyr_w: ") << gyr_x.getBiasInstability() << '\n';
-  out_file << "}" << '\n';
+  out_file << "\ty-axis:\n";
+  out_file << "\t\tgyr_n: " << gyr_y.getWhiteNoise() << '\n';
+  out_file << "\t\tgyr_w: " << gyr_y.getBiasInstability() << '\n';
 
-  out_file << "y-axis: ";
-  out_file << "{" << '\n';
+  out_file << "\tz-axis: \n";
+  out_file << "\t\tgyr_n: " << gyr_z.getWhiteNoise() << '\n';
+  out_file << "\t\tgyr_w: " << gyr_z.getBiasInstability() << '\n';
 
-  out_file << std::string("gyr_n: ") << gyr_y.getWhiteNoise() << '\n';
-  out_file << std::string("gyr_w: ") << gyr_y.getBiasInstability() << '\n';
-  out_file << "}" << '\n';
+  out_file << "Acc:\n";
+  out_file << "\tunit: m/s^2\n";
 
-  out_file << "z-axis: ";
-  out_file << "{" << '\n';
-  out_file << std::string("gyr_n: ") << gyr_z.getWhiteNoise() << '\n';
-  out_file << std::string("gyr_w: ") << gyr_z.getBiasInstability() << '\n';
-  out_file << "}" << '\n';
-
-  out_file << "}" << '\n';
-
-  out_file << "Acc: ";
-  out_file << "{" << '\n';
-  out_file << "unit: m/s^2" << '\n';
-
-  out_file << "avg-axis";
-  out_file << "{" << '\n';
-  out_file << std::string("acc_n: ")
+  out_file << "\tavg-axis\n";
+  out_file << "\t\tacc_n: "
            << (acc_x.getWhiteNoise() + acc_y.getWhiteNoise() +
                acc_z.getWhiteNoise()) /
                   3
            << '\n';
-  out_file << std::string("acc_w: ")
+  out_file << "\t\tacc_w: "
            << (acc_x.getBiasInstability() + acc_y.getBiasInstability() +
                acc_z.getBiasInstability()) /
                   3
            << '\n';
-  out_file << "}" << '\n';
 
-  out_file << "x-axis: ";
-  out_file << "{" << '\n';
-  out_file << std::string("acc_n: ") << acc_x.getWhiteNoise() << '\n';
-  out_file << std::string("acc_w: ") << acc_x.getBiasInstability() << '\n';
-  out_file << "}" << '\n';
+  out_file << "\tx-axis:\n";
+  out_file << "\t\tacc_n: " << acc_x.getWhiteNoise() << '\n';
+  out_file << "\t\tacc_w: " << acc_x.getBiasInstability() << '\n';
 
-  out_file << "y-axis: ";
-  out_file << "{" << '\n';
-  out_file << std::string("acc_n: ") << acc_y.getWhiteNoise() << '\n';
-  out_file << std::string("acc_w: ") << acc_y.getBiasInstability() << '\n';
-  out_file << "}" << '\n';
+  out_file << "\ty-axis:\n";
+  out_file << "\t\tacc_n: " << acc_y.getWhiteNoise() << '\n';
+  out_file << "\t\tacc_w: " << acc_y.getBiasInstability() << '\n';
 
-  out_file << "z-axis: ";
-  out_file << "{" << '\n';
-  out_file << std::string("acc_n: ") << acc_z.getWhiteNoise() << '\n';
-  out_file << std::string("acc_w: ") << acc_z.getBiasInstability() << '\n';
-  out_file << "}" << '\n';
-
-  out_file << "}" << '\n';
+  out_file << "\tz-axis:\n";
+  out_file << "\t\tacc_n: " << acc_z.getWhiteNoise() << '\n';
+  out_file << "\t\tacc_w: " << acc_z.getBiasInstability() << '\n';
 
   out_file.close();
 }
@@ -328,6 +304,7 @@ int main(int argc, char **argv) {
   //    return 0;
   //  }
 
+  imu_name = "imuSimulation";
   imu_data_path = "../data/imu_noise_data_sim.txt";
   if (!ReadImuDataSimpleFormat(imu_data_path)) {
     return 0;
