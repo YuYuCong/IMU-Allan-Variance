@@ -14,7 +14,7 @@ imu::AllanGyr::~AllanGyr() {
 
 void imu::AllanGyr::PushRadPerSec(double data, double time) {  // use this one
   // trans to degree per hour
-  m_rawData.push_back(GyrData(data * 57.3 * 3600, time));
+  m_rawData.push_back(GyrData(data * (180.0 / M_PI) * 3600, time));
   numData++;
 }
 

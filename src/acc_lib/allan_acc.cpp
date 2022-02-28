@@ -13,7 +13,7 @@ imu::AllanAcc::~AllanAcc() {
 }
 
 void imu::AllanAcc::PushRadPerSec(double data, double time) {
-  m_rawData.push_back(AccData(data * 57.3 * 3600, time));
+  m_rawData.push_back(AccData(data * (180.0 / M_PI) * 3600, time));
   numData++;
 }
 
