@@ -166,7 +166,7 @@ double FitAllanAcc::calcSigma2(double _Q, double _N, double _B, double _K,
 
 double FitAllanAcc::getN() const { return sqrt(N * N); }
 
-double FitAllanAcc::getB() const { return sqrt(B * B) / 0.6642824703; }
+double FitAllanAcc::getB() const { return sqrt(B * B * M_PI / (2 * log(2))); }
 
 double FitAllanAcc::getK() const { return sqrt(3.0 * K * K); }
 

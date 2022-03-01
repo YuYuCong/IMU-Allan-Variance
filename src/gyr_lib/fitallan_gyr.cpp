@@ -147,7 +147,7 @@ double FitAllanGyr::calcSigma2(double _Q, double _N, double _B, double _K,
 
 double FitAllanGyr::getN() const { return sqrt(N * N); }
 
-double FitAllanGyr::getB() const { return sqrt(B * B) / 0.6642824703; }
+double FitAllanGyr::getB() const { return sqrt(B * B * M_PI / (2 * log(2))); }
 
 double FitAllanGyr::getK() const { return sqrt(3.0 * K * K); }
 
