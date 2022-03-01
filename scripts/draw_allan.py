@@ -38,13 +38,13 @@ def viz_allan_variance(title="", all_data=[("label", [], [])]):
         else:
             plt.scatter(x, y, label=label, s=8)
         plt.loglog(x, y)
-    plt.xlabel(r'$\tau[s]$')
+    plt.xlabel(r'$\tau[sec]$')
     if ('gyr' in label):
-        plt.ylabel(r'$\sigma(\tau)[deg/h]$')
+        plt.ylabel(r'$\sigma(\tau)[rad/s]$')
         # or use data/3600 to set ylabel deg/s
         # plt.ylabel(r'$\sigma(\tau)[deg/s]$')
     elif ('acc' in label):
-        plt.ylabel(r'$\sigma(\tau)[g]$')
+        plt.ylabel(r'$\sigma(\tau)[rad/s]$')
     plt.grid()
     plt.legend()
     plt.title(title)

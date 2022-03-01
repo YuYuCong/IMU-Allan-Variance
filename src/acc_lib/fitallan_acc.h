@@ -74,35 +74,35 @@ class FitAllanAcc {
   /**
    * @brief getQ
    *          Quantization Noise
-   * @unit: degree
+   * @unit: rad
    * @return
    */
   double getQ() const;
   /**
    * @brief getN
    *          Angle Random Walk
-   * @unit: degree / sqrt( hour )
+   * @unit: rad / sqrt( second )
    * @return
    */
   double getN() const;
   /**
    * @brief getB
    *        Bias Instability
-   * @unit: degree / hour
+   * @unit: rad / second
    * @return
    */
   double getB() const;
   /**
    * @brief getK
    *      Rate Random Walk
-   * @unit: degree / (hour*sqrt(hour))
+   * @unit: rad / (second*sqrt(second))
    * @return
    */
   double getK() const;
   /**
    * @brief getR
    *        Angle Rate Ramp
-   * @unit: degree / (hour * hour)
+   * @unit: rad / (second * second)
    * @return
    */
   double getR() const;

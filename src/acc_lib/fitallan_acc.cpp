@@ -164,37 +164,12 @@ double FitAllanAcc::calcSigma2(double _Q, double _N, double _B, double _K,
   // clang-format on
 }
 
-double FitAllanAcc::getN() const { return sqrt(N * N) / 60.0; }
+double FitAllanAcc::getN() const { return sqrt(N * N); }
 
 double FitAllanAcc::getB() const { return sqrt(B * B) / 0.6642824703; }
 
-double FitAllanAcc::getK() const { return 60.0 * sqrt(3.0 * K * K); }
+double FitAllanAcc::getK() const { return sqrt(3.0 * K * K); }
 
-double FitAllanAcc::getR() const { return 3600.0 * sqrt(2.0 * R * R); }
+double FitAllanAcc::getR() const { return sqrt(2.0 * R * R); }
 
-double FitAllanAcc::getQ() const { return sqrt(Q * Q) / (3600.0 * sqrt(3.0)); }
-
-// double FitAllanAcc::getN() const
-//{
-//    return sqrt( N ) / 60.0;
-//}
-
-// double FitAllanAcc::getB() const
-//{
-//    return sqrt( B ) / 0.6642824703;
-//}
-
-// double FitAllanAcc::getK() const
-//{
-//    return 60.0 * sqrt( 3.0 * K );
-//}
-
-// double FitAllanAcc::getR() const
-//{
-//    return 3600.0 * sqrt( 2.0 * R );
-//}
-
-// double FitAllanAcc::getQ() const
-//{
-//    return sqrt( Q ) / ( 3600.0 * sqrt( 3.0 ) );
-//}
+double FitAllanAcc::getQ() const { return sqrt(Q * Q) / sqrt(3.0); }

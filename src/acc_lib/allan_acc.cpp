@@ -12,16 +12,6 @@ imu::AllanAcc::~AllanAcc() {
   mFactors.clear();
 }
 
-void imu::AllanAcc::PushRadPerSec(double data, double time) {
-  m_rawData.push_back(AccData(data * (180.0 / M_PI) * 3600, time));
-  numData++;
-}
-
-void imu::AllanAcc::PushDegreePerSec(double data, double time) {
-  m_rawData.push_back(AccData(data * 3600, time));
-  numData++;
-}
-
 void imu::AllanAcc::pushMPerSec2(double data, double time) {
   m_rawData.push_back(AccData(data, time));
   numData++;
@@ -41,10 +31,12 @@ void imu::AllanAcc::CalculateAllanVariance() {
   std::cout << m_name << " "
             << " end_t " << end_t << std::endl;
   std::cout << m_name << " "
-            << "dt " << std::endl  //
-            << "-------------" << (end_t - start_t) << " s" << std::endl
-            << "-------------" << (end_t - start_t) / 60 << " min" << std::endl
-            << "-------------" << (end_t - start_t) / 3600 << " h" << std::endl;
+            << "dt " << std::endl
+            << "-------------" << (end_t - start_t) << " sec" << std::endl
+            << "-------------" << (end_t - start_t) / 60.0 << " min"
+            << std::endl
+            << "-------------" << (end_t - start_t) / 3600.0 << " h"
+            << std::endl;
 
   if ((end_t - start_t) / 60 < 10)
     std::cout << m_name << " "

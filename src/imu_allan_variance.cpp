@@ -331,20 +331,17 @@ int main(int argc, char **argv) {
   /// fit allan result
   std::cout << "fitting gyro x..." << std::endl;
   imu::FitAllanGyr fit_gyr_x(gyro_v_x, gyro_ts_x, gyr_x->GetFrequency());
-  std::cout << "  bias " << gyr_x->GetAvgValue() / 3600 << " degree/s"
-            << std::endl;
+  std::cout << "  bias " << gyr_x->GetAvgValue() << " rad/s" << std::endl;
   std::cout << "-------------------" << std::endl;
 
   std::cout << "fitting gyro y..." << std::endl;
   imu::FitAllanGyr fit_gyr_y(gyro_v_y, gyro_ts_y, gyr_y->GetFrequency());
-  std::cout << "  bias " << gyr_y->GetAvgValue() / 3600 << " degree/s"
-            << std::endl;
+  std::cout << "  bias " << gyr_y->GetAvgValue() << " rad/s" << std::endl;
   std::cout << "-------------------" << std::endl;
 
   std::cout << "fitting gyro z..." << std::endl;
   imu::FitAllanGyr fit_gyr_z(gyro_v_z, gyro_ts_z, gyr_z->GetFrequency());
-  std::cout << "  bias " << gyr_z->GetAvgValue() / 3600 << " degree/s"
-            << std::endl;
+  std::cout << "  bias " << gyr_z->GetAvgValue() << " rad/s" << std::endl;
   std::cout << "-------------------" << std::endl;
 
   std::vector<double> gyro_sim_d_x = fit_gyr_x.CalculateSimDeviation(gyro_ts_x);
