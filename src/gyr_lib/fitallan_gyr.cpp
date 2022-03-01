@@ -50,13 +50,30 @@ FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
   //           << " " << C_K_  //
   //           << " " << C_R_ << std::endl;
 
-  std::cout << " Bias Instability " << getB() << " rad/s" << std::endl;
-  std::cout << " Bias Instability " << getBiasInstability() << " rad/s, at "
-            << taus[findMinIndex(CalculateSimDeviation(taus))] << " s"
+  std::cout << "=================================================" << std::endl;
+  std::cout << "### Continuous-time Allan variance coefficients" << std::endl;
+  std::cout << "Quantization Noise (Q): " << getQ() << R"( rad)" << std::endl;
+  std::cout
+      << "White Rate Noise   (N): " << getN()
+      << R"( rad / sqrt(s)        # Kalibr: \sigma_g, Gyroscope "white noise", gyroscope_noise_density)"
+      << std::endl;
+  std::cout << "Bias Instability   (B): " << getB() << R"( rad / s)"
             << std::endl;
-
-  std::cout << " White Noise " << sqrt(freq_) * getN() << " rad/s" << std::endl;
-  std::cout << " White Noise " << getWhiteNoise() << " rad/s" << std::endl;
+  // std::cout << "Bias Instability   (B): " << getBiasInstability( ) << R"( rad
+  // / s, at )" << taus[findMinIndex( calcSimDeviation( taus ) )] << " s" <<
+  // std::endl;
+  std::cout
+      << "Rate Random Walk   (K): " << getK()
+      << R"( rad / (s * sqrt(s))  # Kalibr: \sigma_{bg}, Gyroscope "random walk", gyroscope_random_walk)"
+      << std::endl;
+  std::cout << "Angle Rate Ramp    (R): " << getR() << R"( rad / s^2)"
+            << std::endl;
+  std::cout << std::endl;
+  std::cout << "### Discrete-time standard deviations at sample rate of "
+            << freq_ << " Hz" << std::endl;
+  std::cout << "sigma_w " << getWhiteNoise() << " rad/s" << std::endl;
+  std::cout << "sigma_b " << getRandomWalk() << " rad/s^2" << std::endl;
+  std::cout << "=================================================" << std::endl;
 }
 
 std::vector<double> FitAllanGyr::initValue(std::vector<double> sigma2s,
@@ -114,6 +131,8 @@ double FitAllanGyr::getBiasInstability() const {
 }
 
 double FitAllanGyr::getWhiteNoise() const { return sqrt(freq_) * getN(); }
+
+double FitAllanGyr::getRandomWalk() const { return sqrt(freq_) * getK(); }
 
 double FitAllanGyr::findMinNum(const std::vector<double> num) const {
   double min = 1000.0;

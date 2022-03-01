@@ -50,9 +50,30 @@ FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s, std::vector<double> taus,
   //           << " " << C_Q_  //
   //           << " " << C_Q_ << std::endl;
 
-  std::cout << " Bias Instability " << getBiasInstability() << " m/s^2"
+  std::cout << "=================================================" << std::endl;
+  std::cout << "### Continuous-time Allan variance coefficients" << std::endl;
+  std::cout << "Quantization Noise (Q): " << getQ() << R"( m / s)" << std::endl;
+  std::cout
+      << "White Veloc. Noise (N): " << getN()
+      << R"( m / s / sqrt(s)        # Kalibr: \sigma_g, Gyroscope "white noise", gyroscope_noise_density)"
+      << std::endl;
+  std::cout << "Bias Instability   (B): " << getB() << R"( m / s^2)"
             << std::endl;
-  std::cout << " White Noise " << getWhiteNoise() << " m/s^2" << std::endl;
+  // std::cout << "Bias Instability   (B): " << getBiasInstability( ) << R"( m /
+  // s^2, at )" << taus[findMinIndex( calcSimDeviation( taus ) )] << " s" <<
+  // std::endl;
+  std::cout
+      << "Accel. Random Walk (K): " << getK()
+      << R"( m / (s^2 * sqrt(s))  # Kalibr: \sigma_{bg}, Gyroscope "random walk", gyroscope_random_walk)"
+      << std::endl;
+  std::cout << "Acceleration Ramp  (R): " << getR() << R"( m / s^3)"
+            << std::endl;
+  std::cout << std::endl;
+  std::cout << "### Discrete-time standard deviations at sample rate of "
+            << freq_ << " Hz" << std::endl;
+  std::cout << "sigma_w " << getWhiteNoise() << " m/s^2" << std::endl;
+  std::cout << "sigma_b " << getRandomWalk() << " m/s^3" << std::endl;
+  std::cout << "=================================================" << std::endl;
 }
 
 std::vector<double> FitAllanAcc::initValue(std::vector<double> sigma2s,
@@ -111,6 +132,8 @@ double FitAllanAcc::getBiasInstability() const {
 }
 
 double FitAllanAcc::getWhiteNoise() const { return sqrt(freq_) * getN(); }
+
+double FitAllanAcc::getRandomWalk() const { return sqrt(freq_) * getK(); }
 
 std::vector<double> FitAllanAcc::checkData(std::vector<double> sigma2s,
                                            std::vector<double> taus) {

@@ -152,7 +152,7 @@ class FitAllanAcc {
   /**
    * @brief getR
    *        Acceleration Ramp, a.k.a. Ramp Instability
-   * @unit: m / s^2
+   * @unit: m / s^3
    * @return
    */
   double getR() const;
