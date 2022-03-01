@@ -3,8 +3,8 @@
 using namespace imu;
 
 FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s, std::vector<double> taus,
-                         double _freq)
-    : Q(0.0), N(0.0), B(0.0), K(0.0), R(0.0), freq(_freq) {
+                         double freq)
+    : C_Q_(0.0), C_N_(0.0), C_B_(0.0), C_K_(0.0), C_R_(0.0), freq_(freq) {
   if (sigma2s.size() != taus.size())
     std::cerr << "Error of point size" << std::endl;
 
@@ -13,7 +13,6 @@ FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s, std::vector<double> taus,
   std::vector<double> init = initValue(sigma2s_tmp, m_taus);
 
   int num_samples = sigma2s_tmp.size();
-  //    double param[]  = { Q, N, B, K, R };
   double param[] = {init[0], init[1], init[2], init[3], init[4]};
 
   ceres::Problem problem;
@@ -39,17 +38,17 @@ FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s, std::vector<double> taus,
   //        std::cout << summary.FullReport( ) << "\n";
   //    std::cout << "num_parameters " << summary.num_parameters << std::endl;
 
-  Q = param[0];
-  N = param[1];
-  B = param[2];
-  K = param[3];
-  R = param[4];
+  C_Q_ = param[0];
+  C_N_ = param[1];
+  C_B_ = param[2];
+  C_K_ = param[3];
+  C_R_ = param[4];
 
-  // std::cout << "Q " << Q //
-  //           << " " << N  //
-  //           << " " << B  //
-  //           << " " << K  //
-  //           << " " << R << std::endl;
+  // std::cout << "C_Q_ " << C_Q_ //
+  //           << " " << C_Q_  //
+  //           << " " << C_Q_  //
+  //           << " " << C_Q_  //
+  //           << " " << C_Q_ << std::endl;
 
   std::cout << " Bias Instability " << getBiasInstability() << " m/s^2"
             << std::endl;
@@ -102,7 +101,8 @@ std::vector<double> FitAllanAcc::initValue(std::vector<double> sigma2s,
 std::vector<double> FitAllanAcc::CalculateSimDeviation(
     const std::vector<double> taus) const {
   std::vector<double> des;
-  for (auto &tau : taus) des.push_back(sqrt(calcSigma2(Q, N, B, K, R, tau)));
+  for (auto &tau : taus)
+    des.push_back(sqrt(calcSigma2(C_Q_, C_N_, C_B_, C_K_, C_R_, tau)));
   return des;
 }
 
@@ -111,7 +111,7 @@ double FitAllanAcc::getBiasInstability() const {
 }
 
 double FitAllanAcc::getWhiteNoise() const {
-  return sqrt(freq) * sqrt(calcSigma2(Q, N, B, K, R, 1));
+  return sqrt(freq_) * sqrt(calcSigma2(C_Q_, C_N_, C_B_, C_K_, C_R_, 1));
 }
 
 std::vector<double> FitAllanAcc::checkData(std::vector<double> sigma2s,
@@ -153,23 +153,25 @@ int FitAllanAcc::findMinIndex(std::vector<double> num) {
   return min_index;
 }
 
-double FitAllanAcc::calcSigma2(double _Q, double _N, double _B, double _K,
-                               double _R, double _tau) const {
+double FitAllanAcc::calcSigma2(double C_Q, double C_N, double C_B, double C_K,
+                               double C_R, double tau) const {
   // clang-format off
-  return _Q * _Q / (_tau * _tau)
-      + _N * _N / _tau
-      + _B * _B
-      + _K * _K * _tau
-      + _R * _R * _tau * _tau;
+  return  C_Q * C_Q / ( tau * tau )
+      + C_N * C_N / tau
+      + C_B * C_B
+      + C_K * C_K * tau
+      + C_R * C_R * tau * tau;
   // clang-format on
 }
 
-double FitAllanAcc::getQ() const { return sqrt(Q * Q) / sqrt(3.0); }
+double FitAllanAcc::getQ() const { return sqrt(C_Q_ * C_Q_) / (sqrt(3.0)); }
 
-double FitAllanAcc::getN() const { return sqrt(N * N); }
+double FitAllanAcc::getN() const { return sqrt(C_N_ * C_N_); }
 
-double FitAllanAcc::getB() const { return sqrt(B * B * M_PI / (2 * log(2))); }
+double FitAllanAcc::getB() const {
+  return sqrt(C_B_ * C_B_ * M_PI / (2.0 * log(2.0)));
+}
 
-double FitAllanAcc::getK() const { return sqrt(3.0 * K * K); }
+double FitAllanAcc::getK() const { return sqrt(3.0 * C_K_ * C_K_); }
 
-double FitAllanAcc::getR() const { return sqrt(2.0 * R * R); }
+double FitAllanAcc::getR() const { return sqrt(2.0 * C_R_ * C_R_); }
