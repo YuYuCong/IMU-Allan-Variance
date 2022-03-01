@@ -38,7 +38,7 @@ void imu::AllanAcc::CalculateAllanVariance() {
             << "-------------" << (end_t - start_t) / 3600.0 << " h"
             << std::endl;
 
-  if ((end_t - start_t) / 60 < 10)
+  if ((end_t - start_t) / 60.0 < 10)
     std::cout << m_name << " "
               << " Too short time!!!!" << std::endl;
 
@@ -172,7 +172,7 @@ std::vector<double> imu::AllanAcc::getLogSpace(float a, float b) {
 
   double start = pow(10, a);
   double end = pow(10, b);
-  double progression = pow(end / start, (float)1 / (numCluster - 1));
+  double progression = pow(end / start, 1.0 / (double)(numCluster - 1));
 
   logSpace.push_back(start);
   for (int i = 1; i < numCluster; i++) {
@@ -192,5 +192,5 @@ double imu::AllanAcc::getAvgDt() {
     start_t = acc.t;
     first = false;
   }
-  return sum_dt / (numData - 1);
+  return sum_dt / double(numData - 1);
 }

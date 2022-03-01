@@ -12,7 +12,7 @@ imu::AllanGyr::~AllanGyr() {
   mFactors.clear();
 }
 
-void imu::AllanGyr::pushRadPerSec(double data, double time) {
+void imu::AllanGyr::PushRadPerSec(double data, double time) {
   m_rawData.push_back(GyrData(data, time));
   numData++;
 }
@@ -35,10 +35,12 @@ void imu::AllanGyr::CalculateAllanVariance() {
   std::cout << m_name << " "
             << "dt " << std::endl  //
             << "-------------" << (end_t - start_t) << " sec" << std::endl
-            << "-------------" << (end_t - start_t) / 60.0 << " min" << std::endl
-            << "-------------" << (end_t - start_t) / 3600.0 << " h" << std::endl;
+            << "-------------" << (end_t - start_t) / 60.0 << " min"
+            << std::endl
+            << "-------------" << (end_t - start_t) / 3600.0 << " h"
+            << std::endl;
 
-  if ((end_t - start_t) / 60 < 10)
+  if ((end_t - start_t) / 60.0 < 10)
     std::cout << m_name << " "
               << " Too short time!!!!" << std::endl;
 
@@ -192,7 +194,7 @@ double imu::AllanGyr::getAvgDt() {
     start_t = gyro.t;
     first = false;
   }
-  return sum_dt / (numData - 1);
+  return sum_dt / double(numData - 1);
 }
 
 double imu::AllanGyr::GetAvgValue() {
@@ -202,7 +204,7 @@ double imu::AllanGyr::GetAvgValue() {
     sum += gyro.w;
     ++num;
   }
-  return sum / num;
+  return sum / double(num);
 }
 
 double imu::AllanGyr::GetFrequency() const { return m_freq; }
