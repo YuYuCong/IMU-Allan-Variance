@@ -32,7 +32,7 @@ FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
   options.minimizer_progress_to_stdout = true;
   options.logging_type = ceres::SILENT;
   options.trust_region_strategy_type = ceres::DOGLEG;
-  //    options.max_num_iterations         = 5;
+  options.max_num_iterations = 1000;
 
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);
