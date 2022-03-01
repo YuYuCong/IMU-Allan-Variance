@@ -57,7 +57,7 @@ FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
             << taus[findMinIndex(CalculateSimDeviation(taus))] << " s"
             << std::endl;
 
-  std::cout << " White Noise " << sqrt(freq) * getN() * 60 / (180.0 / M_PI)
+  std::cout << " White Noise " << sqrt(freq) * getN() / (60 * (180.0 / M_PI))
             << " rad/s" << std::endl;
   std::cout << " White Noise " << getWhiteNoise() << " rad/s" << std::endl;
 }
