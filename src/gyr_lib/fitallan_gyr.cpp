@@ -145,6 +145,8 @@ double FitAllanGyr::calcSigma2(double _Q, double _N, double _B, double _K,
   // clang-format on
 }
 
+double FitAllanGyr::getQ() const { return sqrt(Q * Q) / sqrt(3.0); }
+
 double FitAllanGyr::getN() const { return sqrt(N * N); }
 
 double FitAllanGyr::getB() const { return sqrt(B * B * M_PI / (2 * log(2))); }
@@ -152,5 +154,3 @@ double FitAllanGyr::getB() const { return sqrt(B * B * M_PI / (2 * log(2))); }
 double FitAllanGyr::getK() const { return sqrt(3.0 * K * K); }
 
 double FitAllanGyr::getR() const { return sqrt(2.0 * R * R); }
-
-double FitAllanGyr::getQ() const { return sqrt(Q * Q) / sqrt(3.0); }
