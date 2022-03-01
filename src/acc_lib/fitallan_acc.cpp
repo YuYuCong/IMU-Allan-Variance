@@ -110,9 +110,7 @@ double FitAllanAcc::getBiasInstability() const {
   return findMinNum(CalculateSimDeviation(m_taus));
 }
 
-double FitAllanAcc::getWhiteNoise() const {
-  return sqrt(freq_) * sqrt(calcSigma2(C_Q_, C_N_, C_B_, C_K_, C_R_, 1));
-}
+double FitAllanAcc::getWhiteNoise() const { return sqrt(freq_) * getN(); }
 
 std::vector<double> FitAllanAcc::checkData(std::vector<double> sigma2s,
                                            std::vector<double> taus) {

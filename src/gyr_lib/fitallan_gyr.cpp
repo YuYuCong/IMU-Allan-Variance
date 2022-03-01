@@ -113,9 +113,7 @@ double FitAllanGyr::getBiasInstability() const {
   return findMinNum(CalculateSimDeviation(m_taus));
 }
 
-double FitAllanGyr::getWhiteNoise() const {
-  return sqrt(freq) * sqrt(calcSigma2(C_Q_, C_N_, C_B_, C_K_, C_R_, 1));
-}
+double FitAllanGyr::getWhiteNoise() const { return sqrt(freq_) * getN(); }
 
 double FitAllanGyr::findMinNum(const std::vector<double> num) const {
   double min = 1000.0;
