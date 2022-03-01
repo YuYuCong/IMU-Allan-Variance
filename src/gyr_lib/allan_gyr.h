@@ -20,20 +20,6 @@ class AllanGyr {
    */
   void PushRadPerSec(double data, double time);
 
-  /**
-   * @brief push gyro reading in degree into sequence
-   * @param data gyro reading in degree per second
-   * @param time
-   */
-  void PushDegreePerSec(double data, double time);
-
-  /**
-   * @brief push gyro reading in degree into sequence
-   * @param data gyro reading in degree per hour
-   * @param time
-   */
-  void PushDegreePerHou(double data, double time);
-
   void CalculateAllanVariance();
 
   std::vector<double> GetVariance() const;

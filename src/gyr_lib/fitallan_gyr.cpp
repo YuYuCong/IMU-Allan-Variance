@@ -3,8 +3,8 @@
 using namespace imu;
 
 FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
-                         double _freq)
-    : Q(0.0), N(0.0), B(0.0), K(0.0), R(0.0), freq(_freq) {
+                         double freq)
+    : C_Q_(0.0), C_N_(0.0), C_B_(0.0), C_K_(0.0), C_R_(0.0), freq_(freq) {
   if (sigma2s.size() != taus.size())
     std::cerr << "Error of point size" << std::endl;
 
@@ -13,7 +13,6 @@ FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
   std::vector<double> init = initValue(sigma2s, taus);
 
   int num_samples = sigma2s.size();
-  //    double param[]  = { Q, N, B, K, R };
   double param[] = {init[0], init[1], init[2], init[3], init[4]};
 
   ceres::Problem problem;
@@ -32,34 +31,44 @@ FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
   options.minimizer_progress_to_stdout = true;
   options.logging_type = ceres::SILENT;
   options.trust_region_strategy_type = ceres::DOGLEG;
-  //    options.max_num_iterations         = 5;
+  options.max_num_iterations = 1000;
 
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);
   //        std::cout << summary.FullReport( ) << "\n";
   //    std::cout << "num_parameters " << summary.num_parameters << std::endl;
 
-  Q = param[0];
-  N = param[1];
-  B = param[2];
-  K = param[3];
-  R = param[4];
+  C_Q_ = param[0];
+  C_N_ = param[1];
+  C_B_ = param[2];
+  C_K_ = param[3];
+  C_R_ = param[4];
 
-  // std::cout << "Q " << Q //
-  //           << " " << N  //
-  //           << " " << B  //
-  //           << " " << K  //
-  //           << " " << R << std::endl;
+  // std::cout << "C_Q_ " << C_Q_ //
+  //           << " " << C_N_  //
+  //           << " " << C_B_  //
+  //           << " " << C_K_  //
+  //           << " " << C_R_ << std::endl;
 
-  std::cout << " Bias Instability " << getB() / (57.3 * 3600) << " rad/s"
+  std::cout << "=================================================" << std::endl;
+  std::cout << "### Continuous-time Allan variance coefficients" << std::endl;
+  std::cout << "Quantization Noise (Q): " << getQ() << R"( rad)" << std::endl;
+  std::cout
+      << "White Rate Noise   (N): " << getN()
+      << R"( rad / sqrt(s)        # Kalibr: \sigma_g, Gyroscope "white noise", gyroscope_noise_density)"
+      << std::endl;
+  std::cout << "Bias Instability   (B): " << getB() << R"( rad / s)"
             << std::endl;
-  std::cout << " Bias Instability " << getBiasInstability() << " rad/s, at "
-            << taus[findMinIndex(CalculateSimDeviation(taus))] << " s"
+  // std::cout << "Bias Instability   (B): " << getBiasInstability( ) << R"( rad
+  // / s, at )" << taus[findMinIndex( calcSimDeviation( taus ) )] << " s" <<
+  // std::endl;
+  std::cout
+      << "Rate Random Walk   (K): " << getK()
+      << R"( rad / (s * sqrt(s))  # Kalibr: \sigma_{bg}, Gyroscope "random walk", gyroscope_random_walk)"
+      << std::endl;
+  std::cout << "Angle Rate Ramp    (R): " << getR() << R"( rad / s^2)"
             << std::endl;
-
-  std::cout << " White Noise " << sqrt(freq) * getN() * 60 / 57.3 << " rad/s"
-            << std::endl;
-  std::cout << " White Noise " << getWhiteNoise() << " rad/s" << std::endl;
+  std::cout << "=================================================" << std::endl;
 }
 
 std::vector<double> FitAllanGyr::initValue(std::vector<double> sigma2s,
@@ -107,16 +116,13 @@ std::vector<double> FitAllanGyr::initValue(std::vector<double> sigma2s,
 std::vector<double> FitAllanGyr::CalculateSimDeviation(
     const std::vector<double> taus) const {
   std::vector<double> des;
-  for (auto& tau : taus) des.push_back(sqrt(calcSigma2(Q, N, B, K, R, tau)));
+  for (auto& tau : taus)
+    des.push_back(sqrt(calcSigma2(C_Q_, C_N_, C_B_, C_K_, C_R_, tau)));
   return des;
 }
 
 double FitAllanGyr::getBiasInstability() const {
-  return findMinNum(CalculateSimDeviation(m_taus)) / (57.3 * 3600);
-}
-
-double FitAllanGyr::getWhiteNoise() const {
-  return sqrt(freq) * sqrt(calcSigma2(Q, N, B, K, R, 1)) / (57.3 * 3600);
+  return findMinNum(CalculateSimDeviation(m_taus));
 }
 
 double FitAllanGyr::findMinNum(const std::vector<double> num) const {
@@ -136,23 +142,25 @@ int FitAllanGyr::findMinIndex(std::vector<double> num) {
   return min_index;
 }
 
-double FitAllanGyr::calcSigma2(double _Q, double _N, double _B, double _K,
-                               double _R, double _tau) const {
+double FitAllanGyr::calcSigma2(double C_Q, double C_N, double C_B, double C_K,
+                               double C_R, double tau) const {
   // clang-format off
-  return  _Q * _Q / ( _tau * _tau )
-      + _N * _N / _tau
-      + _B * _B
-      + _K * _K * _tau
-      + _R * _R * _tau * _tau;
+  return  C_Q * C_Q / ( tau * tau )
+      + C_N * C_N / tau
+      + C_B * C_B
+      + C_K * C_K * tau
+      + C_R * C_R * tau * tau;
   // clang-format on
 }
 
-double FitAllanGyr::getN() const { return sqrt(N * N) / 60.0; }
+double FitAllanGyr::getQ() const { return sqrt(C_Q_ * C_Q_) / (sqrt(3.0)); }
 
-double FitAllanGyr::getB() const { return sqrt(B * B) / 0.6642824703; }
+double FitAllanGyr::getN() const { return sqrt(C_N_ * C_N_); }
 
-double FitAllanGyr::getK() const { return 60.0 * sqrt(3.0 * K * K); }
+double FitAllanGyr::getB() const {
+  return sqrt(C_B_ * C_B_ * M_PI / (2 * log(2)));
+}
 
-double FitAllanGyr::getR() const { return 3600.0 * sqrt(2.0 * R * R); }
+double FitAllanGyr::getK() const { return sqrt(3.0 * C_K_ * C_K_); }
 
-double FitAllanGyr::getQ() const { return sqrt(Q * Q) / (3600.0 * sqrt(3.0)); }
+double FitAllanGyr::getR() const { return sqrt(2.0 * C_R_ * C_R_); }

@@ -12,8 +12,6 @@ class AllanAcc {
  public:
   AllanAcc(std::string name, int maxCluster = 10000);
   ~AllanAcc();
-  void PushRadPerSec(double data, double time);
-  void PushDegreePerSec(double data, double time);
   void pushMPerSec2(double data, double time);
   void CalculateAllanVariance();
 

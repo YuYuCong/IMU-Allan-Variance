@@ -230,58 +230,48 @@ void WriteResult(const std::string &data_path, const std::string &sensor_name,
   out_file << "name: " << sensor_name << '\n';
 
   out_file << "Gyro:\n";
-  out_file << "\tunit: rad/s\n";
+  out_file << "\tunit:"
+           << "gyr_n: rad / sqrt(s), gyr_w: rad / s^2 / sqrt(Hz)\n";
 
   out_file << "\tavg-axis:\n";
   out_file << "\t\tgyr_n: "
-           << (gyr_x.getWhiteNoise() + gyr_y.getWhiteNoise() +
-               gyr_z.getWhiteNoise()) /
-                  3
-           << '\n';
+           << (gyr_x.getN() + gyr_y.getN() + gyr_z.getN()) / 3.0 << '\n';
   out_file << "\t\tgyr_w: "
-           << (gyr_x.getBiasInstability() + gyr_y.getBiasInstability() +
-               gyr_z.getBiasInstability()) /
-                  3
-           << '\n';
+           << (gyr_x.getK() + gyr_y.getK() + gyr_z.getK()) / 3.0 << '\n';
 
   out_file << "\tx-axis:\n";
-  out_file << "\t\tgyr_n: " << gyr_x.getWhiteNoise() << '\n';
-  out_file << "\t\tgyr_w: " << gyr_x.getBiasInstability() << '\n';
+  out_file << "\t\tgyr_n: " << gyr_x.getN() << '\n';
+  out_file << "\t\tgyr_w: " << gyr_x.getK() << '\n';
 
   out_file << "\ty-axis:\n";
-  out_file << "\t\tgyr_n: " << gyr_y.getWhiteNoise() << '\n';
-  out_file << "\t\tgyr_w: " << gyr_y.getBiasInstability() << '\n';
+  out_file << "\t\tgyr_n: " << gyr_y.getN() << '\n';
+  out_file << "\t\tgyr_w: " << gyr_y.getK() << '\n';
 
   out_file << "\tz-axis: \n";
-  out_file << "\t\tgyr_n: " << gyr_z.getWhiteNoise() << '\n';
-  out_file << "\t\tgyr_w: " << gyr_z.getBiasInstability() << '\n';
+  out_file << "\t\tgyr_n: " << gyr_z.getN() << '\n';
+  out_file << "\t\tgyr_w: " << gyr_z.getK() << '\n';
 
   out_file << "Acc:\n";
-  out_file << "\tunit: m/s^2\n";
+  out_file << "\tunit:"
+           << "acc_n: m / s^2 / sqrt(Hz), acc_w: m / s^3 / sqrt(Hz)\n";
 
   out_file << "\tavg-axis\n";
-  out_file << "\t\tacc_n: "
-           << (acc_x.getWhiteNoise() + acc_y.getWhiteNoise() +
-               acc_z.getWhiteNoise()) /
-                  3
+  out_file << "\t\tacc_n: " << (acc_x.getN() + acc_y.getN() + acc_z.getN()) / 3
            << '\n';
-  out_file << "\t\tacc_w: "
-           << (acc_x.getBiasInstability() + acc_y.getBiasInstability() +
-               acc_z.getBiasInstability()) /
-                  3
+  out_file << "\t\tacc_w: " << (acc_x.getK() + acc_y.getK() + acc_z.getK()) / 3
            << '\n';
 
   out_file << "\tx-axis:\n";
-  out_file << "\t\tacc_n: " << acc_x.getWhiteNoise() << '\n';
-  out_file << "\t\tacc_w: " << acc_x.getBiasInstability() << '\n';
+  out_file << "\t\tacc_n: " << acc_x.getN() << '\n';
+  out_file << "\t\tacc_w: " << acc_x.getK() << '\n';
 
   out_file << "\ty-axis:\n";
-  out_file << "\t\tacc_n: " << acc_y.getWhiteNoise() << '\n';
-  out_file << "\t\tacc_w: " << acc_y.getBiasInstability() << '\n';
+  out_file << "\t\tacc_n: " << acc_y.getN() << '\n';
+  out_file << "\t\tacc_w: " << acc_y.getK() << '\n';
 
   out_file << "\tz-axis:\n";
-  out_file << "\t\tacc_n: " << acc_z.getWhiteNoise() << '\n';
-  out_file << "\t\tacc_w: " << acc_z.getBiasInstability() << '\n';
+  out_file << "\t\tacc_n: " << acc_z.getN() << '\n';
+  out_file << "\t\tacc_w: " << acc_z.getK() << '\n';
 
   out_file.close();
 }
@@ -331,20 +321,17 @@ int main(int argc, char **argv) {
   /// fit allan result
   std::cout << "fitting gyro x..." << std::endl;
   imu::FitAllanGyr fit_gyr_x(gyro_v_x, gyro_ts_x, gyr_x->GetFrequency());
-  std::cout << "  bias " << gyr_x->GetAvgValue() / 3600 << " degree/s"
-            << std::endl;
+  std::cout << "  bias " << gyr_x->GetAvgValue() << " rad/s" << std::endl;
   std::cout << "-------------------" << std::endl;
 
   std::cout << "fitting gyro y..." << std::endl;
   imu::FitAllanGyr fit_gyr_y(gyro_v_y, gyro_ts_y, gyr_y->GetFrequency());
-  std::cout << "  bias " << gyr_y->GetAvgValue() / 3600 << " degree/s"
-            << std::endl;
+  std::cout << "  bias " << gyr_y->GetAvgValue() << " rad/s" << std::endl;
   std::cout << "-------------------" << std::endl;
 
   std::cout << "fitting gyro z..." << std::endl;
   imu::FitAllanGyr fit_gyr_z(gyro_v_z, gyro_ts_z, gyr_z->GetFrequency());
-  std::cout << "  bias " << gyr_z->GetAvgValue() / 3600 << " degree/s"
-            << std::endl;
+  std::cout << "  bias " << gyr_z->GetAvgValue() << " rad/s" << std::endl;
   std::cout << "-------------------" << std::endl;
 
   std::vector<double> gyro_sim_d_x = fit_gyr_x.CalculateSimDeviation(gyro_ts_x);
