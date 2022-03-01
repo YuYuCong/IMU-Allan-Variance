@@ -68,11 +68,6 @@ FitAllanAcc::FitAllanAcc(std::vector<double> sigma2s, std::vector<double> taus,
       << std::endl;
   std::cout << "Acceleration Ramp  (R): " << getR() << R"( m / s^3)"
             << std::endl;
-  std::cout << std::endl;
-  std::cout << "### Discrete-time standard deviations at sample rate of "
-            << freq_ << " Hz" << std::endl;
-  std::cout << "sigma_w " << getWhiteNoise() << " m/s^2" << std::endl;
-  std::cout << "sigma_b " << getRandomWalk() << " m/s^3" << std::endl;
   std::cout << "=================================================" << std::endl;
 }
 
@@ -130,10 +125,6 @@ std::vector<double> FitAllanAcc::CalculateSimDeviation(
 double FitAllanAcc::getBiasInstability() const {
   return findMinNum(CalculateSimDeviation(m_taus));
 }
-
-double FitAllanAcc::getWhiteNoise() const { return getN() / sqrt(freq_); }
-
-double FitAllanAcc::getRandomWalk() const { return sqrt(freq_) * getK(); }
 
 std::vector<double> FitAllanAcc::checkData(std::vector<double> sigma2s,
                                            std::vector<double> taus) {

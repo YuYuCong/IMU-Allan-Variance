@@ -66,13 +66,7 @@ class FitAllanGyr {
   std::vector<double> CalculateSimDeviation(
       const std::vector<double> taus) const;
 
-  /**
-   * The following functions return the discrete-time standard deviations at the
-   * given frequency.
-   */
   double getBiasInstability() const;
-  double getWhiteNoise() const;
-  double getRandomWalk() const;
 
  private:
   std::vector<double> initValue(std::vector<double> sigma2s,

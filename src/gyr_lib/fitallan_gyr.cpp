@@ -68,11 +68,6 @@ FitAllanGyr::FitAllanGyr(std::vector<double> sigma2s, std::vector<double> taus,
       << std::endl;
   std::cout << "Angle Rate Ramp    (R): " << getR() << R"( rad / s^2)"
             << std::endl;
-  std::cout << std::endl;
-  std::cout << "### Discrete-time standard deviations at sample rate of "
-            << freq_ << " Hz" << std::endl;
-  std::cout << "sigma_w " << getWhiteNoise() << " rad/s" << std::endl;
-  std::cout << "sigma_b " << getRandomWalk() << " rad/s^2" << std::endl;
   std::cout << "=================================================" << std::endl;
 }
 
@@ -129,10 +124,6 @@ std::vector<double> FitAllanGyr::CalculateSimDeviation(
 double FitAllanGyr::getBiasInstability() const {
   return findMinNum(CalculateSimDeviation(m_taus));
 }
-
-double FitAllanGyr::getWhiteNoise() const { return getN() / sqrt(freq_); }
-
-double FitAllanGyr::getRandomWalk() const { return sqrt(freq_) * getK(); }
 
 double FitAllanGyr::findMinNum(const std::vector<double> num) const {
   double min = 1000.0;
