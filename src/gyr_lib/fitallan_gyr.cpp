@@ -130,7 +130,7 @@ double FitAllanGyr::getBiasInstability() const {
   return findMinNum(CalculateSimDeviation(m_taus));
 }
 
-double FitAllanGyr::getWhiteNoise() const { return sqrt(freq_) * getN(); }
+double FitAllanGyr::getWhiteNoise() const { return getN() / sqrt(freq_); }
 
 double FitAllanGyr::getRandomWalk() const { return sqrt(freq_) * getK(); }
 

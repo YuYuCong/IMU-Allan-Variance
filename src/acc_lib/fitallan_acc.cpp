@@ -131,7 +131,7 @@ double FitAllanAcc::getBiasInstability() const {
   return findMinNum(CalculateSimDeviation(m_taus));
 }
 
-double FitAllanAcc::getWhiteNoise() const { return sqrt(freq_) * getN(); }
+double FitAllanAcc::getWhiteNoise() const { return getN() / sqrt(freq_); }
 
 double FitAllanAcc::getRandomWalk() const { return sqrt(freq_) * getK(); }
 
