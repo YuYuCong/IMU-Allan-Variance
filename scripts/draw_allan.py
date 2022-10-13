@@ -79,19 +79,19 @@ def main():
 
     # read sim gyro allan data
     sim_gyro_x_list = read_from_simple_file(
-        '../data/data_' + imu_name + '_sim_gyr_x.txt')
+        '../data/data_' + imu_name + '_fitting_gyr_x.txt')
     sim_gyro_y_list = read_from_simple_file(
-        '../data/data_' + imu_name + '_sim_gyr_y.txt')
+        '../data/data_' + imu_name + '_fitting_gyr_y.txt')
     sim_gyro_z_list = read_from_simple_file(
-        '../data/data_' + imu_name + '_sim_gyr_z.txt')
+        '../data/data_' + imu_name + '_fitting_gyr_z.txt')
 
     # read sim acc allan data
     sim_acc_x_list = read_from_simple_file(
-        '../data/data_' + imu_name + '_sim_acc_x.txt')
+        '../data/data_' + imu_name + '_fitting_acc_x.txt')
     sim_acc_y_list = read_from_simple_file(
-        '../data/data_' + imu_name + '_sim_acc_y.txt')
+        '../data/data_' + imu_name + '_fitting_acc_y.txt')
     sim_acc_z_list = read_from_simple_file(
-        '../data/data_' + imu_name + '_sim_acc_z.txt')
+        '../data/data_' + imu_name + '_fitting_acc_z.txt')
 
     viz_allan_variance(title="allan_variance_of_gyro",
                        all_data=[("gyro_x", gyro_time_list, gyro_x_list),

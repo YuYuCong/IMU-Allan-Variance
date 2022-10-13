@@ -64,8 +64,8 @@ cd build
 - data_IMUxxxx_acc_x.txt: acc采样x轴
 - data_IMUxxxx_acc_y.txt: acc采样y轴
 - ...
-- data_IMUxxxx_sim_acc_t.txt: acc拟合时间戳
-- data_IMUxxxx_sim_acc_y.txt: acc拟合y轴曲线
+- data_IMUxxxx_fitting_acc_t.txt: acc拟合时间戳
+- data_IMUxxxx_fitting_acc_y.txt: acc拟合y轴曲线
 - ...
 - IMUxxxx_imu_param.txt: IMU噪声分析解结果
 

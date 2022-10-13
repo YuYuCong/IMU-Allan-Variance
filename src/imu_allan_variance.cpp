@@ -371,12 +371,12 @@ int main(int argc, char **argv) {
   std::vector<double> acc_sim_d_z = fit_acc_z.CalculateSimDeviation(acc_ts_x);
 
   /// log to viz
-  WriteDataAllThreeAxis(data_save_path, imu_name + "_sim_gyr", gyro_ts_x,
+  WriteDataAllThreeAxis(data_save_path, imu_name + "_fitting_gyr", gyro_ts_x,
                         gyro_sim_d_x, gyro_sim_d_y, gyro_sim_d_z);
   WriteDataAllThreeAxis(data_save_path, imu_name + "_gyr", gyro_ts_x, gyro_d_x,
                         gyro_d_y, gyro_d_z);
 
-  WriteDataAllThreeAxis(data_save_path, imu_name + "_sim_acc", acc_ts_x,
+  WriteDataAllThreeAxis(data_save_path, imu_name + "_fitting_acc", acc_ts_x,
                         acc_sim_d_x, acc_sim_d_y, acc_sim_d_z);
   WriteDataAllThreeAxis(data_save_path, imu_name + "_acc", acc_ts_x, acc_d_x,
                         acc_d_y, acc_d_z);
